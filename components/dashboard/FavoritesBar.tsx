@@ -3,21 +3,17 @@ import { createPortal } from 'react-dom';
 import { GlassCard } from '../ui/GlassCard';
 import { TrendingUp, TrendingDown, Plus, Trash2 } from 'lucide-react';
 
-// Mock data - in a real app this would come from props/context
-const initialFavorites = [
-    { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', price: 64230.50, change: 2.4, isUp: true },
-    { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', price: 3450.12, change: -1.2, isUp: false },
-    { id: 'solana', symbol: 'SOL', name: 'Solana', price: 145.60, change: 5.8, isUp: true },
-    { id: 'cardano', symbol: 'ADA', name: 'Cardano', price: 0.45, change: 0.5, isUp: true },
-];
+// Mock data removed (lifted to App.tsx)
 
 interface FavoritesBarProps {
     onSelect?: (coin: { name: string; symbol: string; price: number }) => void;
-    availableCoins?: any[]; // Keep any for now to avoid massive type imports, ideally CoinData
+    availableCoins?: any[];
+    favorites: any[];
+    onToggleFavorite: (coin: any) => void;
 }
 
-export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableCoins = [] }) => {
-    const [favorites, setFavorites] = useState(initialFavorites);
+export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableCoins = [], favorites, onToggleFavorite }) => {
+    // Local state for UI only
     const [contextMenu, setContextMenu] = useState<{ x: number; y: number; id: string | number } | null>(null);
     const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
     const [addMenuPos, setAddMenuPos] = useState<{ x: number; y: number } | null>(null);
@@ -29,8 +25,6 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
             setContextMenu(null);
 
             // Logic to close add menu on click outside
-            // We need to check if click is NOT in the button (addMenuRef covers that)
-            // AND NOT in the portal dropdown (which we can identify by class or attribute)
             const target = e.target as HTMLElement;
             if (addMenuRef.current && !addMenuRef.current.contains(target)) {
                 if (!target.closest('.favorites-portal-menu')) {
@@ -39,8 +33,8 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
             }
         };
 
+        // ... existing scroll handler ...
         const handleScroll = () => {
-            // Close on scroll to prevent detached UI
             if (isAddMenuOpen) setIsAddMenuOpen(false);
             if (contextMenu) setContextMenu(null);
         };
@@ -62,7 +56,7 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
     };
 
     const handleDelete = (id: string | number) => {
-        setFavorites(prev => prev.filter(f => f.id !== id));
+        onToggleFavorite({ id });
         setContextMenu(null);
     };
 
@@ -84,21 +78,12 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
 
     const handleAddFavorite = (coin: any) => {
         // Prevent adding duplicates
-        if (favorites.some(fav => fav.id === coin.id || fav.symbol === coin.symbol.toUpperCase())) {
+        if (favorites.some(fav => fav.id === coin.id)) {
             setIsAddMenuOpen(false);
             return;
         }
 
-        const newFavorite = {
-            id: coin.id,
-            symbol: coin.symbol.toUpperCase(),
-            name: coin.name,
-            price: coin.current_price,
-            change: coin.price_change_percentage_24h,
-            isUp: coin.price_change_percentage_24h >= 0
-        };
-
-        setFavorites(prev => [...prev, newFavorite]);
+        onToggleFavorite(coin);
         setIsAddMenuOpen(false);
     };
 

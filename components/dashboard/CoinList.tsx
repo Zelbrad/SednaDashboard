@@ -6,15 +6,18 @@ import { ArrowUpRight, ArrowDownRight, MoreHorizontal, FileText, Star } from 'lu
 interface CoinListProps {
   coins: CoinData[];
   onSelect?: (coin: CoinData) => void;
+  favorites?: string[];
+  onToggleFavorite?: (coin: CoinData) => void;
 }
 
-export const CoinList: React.FC<CoinListProps> = ({ coins, onSelect }) => {
+export const CoinList: React.FC<CoinListProps> = ({ coins, onSelect, favorites = [], onToggleFavorite }) => {
   return (
     <div className="w-full">
-      {/* Table Headers */}
+      {/* ... Headers ... */}
       <div className="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-medium text-sedna-textMuted uppercase tracking-wider border-b border-white/5">
         <div className="col-span-1"></div>
         <div className="col-span-3">Asset</div>
+        {/* ... */}
         <div className="col-span-2 text-right">Price</div>
         <div className="col-span-2 text-right">Change (24h)</div>
         <div className="col-span-2 text-right">Trend</div>
@@ -24,15 +27,33 @@ export const CoinList: React.FC<CoinListProps> = ({ coins, onSelect }) => {
       {/* List Items */}
       <div className="space-y-1 mt-2">
         {coins.map((coin) => (
-          <CoinRow key={coin.id} coin={coin} onSelect={onSelect} />
+          <CoinRow
+            key={coin.id}
+            coin={coin}
+            onSelect={onSelect}
+            isFavorite={favorites.includes(coin.id)}
+            onToggleFavorite={onToggleFavorite}
+          />
         ))}
       </div>
     </div>
   );
 };
 
-const CoinRow: React.FC<{ coin: CoinData; onSelect?: (c: CoinData) => void }> = ({ coin, onSelect }) => {
+interface CoinRowProps {
+  coin: CoinData;
+  onSelect?: (c: CoinData) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (c: CoinData) => void;
+}
+
+const CoinRow: React.FC<CoinRowProps> = ({ coin, onSelect, isFavorite, onToggleFavorite }) => {
   const isPositive = coin.price_change_percentage_24h >= 0;
+
+  const handleStarClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row selection
+    onToggleFavorite?.(coin);
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -50,8 +71,11 @@ const CoinRow: React.FC<{ coin: CoinData; onSelect?: (c: CoinData) => void }> = 
 
       {/* Checkbox / Star */}
       <div className="col-span-1 flex items-center">
-        <button className="text-gray-600 hover:text-yellow-400 transition-colors">
-          <Star size={16} />
+        <button
+          className={`transition-colors ${isFavorite ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}`}
+          onClick={handleStarClick}
+        >
+          <Star size={16} fill={isFavorite ? "currentColor" : "none"} />
         </button>
       </div>
 

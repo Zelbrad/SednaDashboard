@@ -13,12 +13,23 @@ import { CoinData } from './types';
 import { Loader2, Search, Filter, SlidersHorizontal, ArrowDownToLine, Menu } from 'lucide-react';
 import { Logo } from './components/ui/Logo';
 
+// ... imports
+
+// Mock favorites moved here
+const initialFavorites = [
+  { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', price: 64230.50, change: 2.4, isUp: true },
+  { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', price: 3450.12, change: -1.2, isUp: false },
+  { id: 'solana', symbol: 'SOL', name: 'Solana', price: 145.60, change: 5.8, isUp: true },
+  { id: 'cardano', symbol: 'ADA', name: 'Cardano', price: 0.45, change: 0.5, isUp: true },
+];
+
 function App() {
   const [coins, setCoins] = useState<CoinData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedCoin, setSelectedCoin] = useState<CoinSelection>({ name: 'Bitcoin', symbol: 'BTC', price: 64230.50 });
+  const [favorites, setFavorites] = useState(initialFavorites);
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,6 +43,24 @@ function App() {
     };
     loadData();
   }, []);
+
+  const toggleFavorite = (coin: any) => {
+    if (favorites.some(fav => fav.id === coin.id)) {
+      setFavorites(prev => prev.filter(f => f.id !== coin.id));
+    } else {
+      const newFavorite = {
+        id: coin.id,
+        symbol: coin.symbol.toUpperCase(),
+        name: coin.name,
+        price: coin.current_price,
+        change: coin.price_change_percentage_24h,
+        isUp: coin.price_change_percentage_24h >= 0
+      };
+      setFavorites(prev => [...prev, newFavorite]);
+    }
+  };
+
+  // ...
 
   const filteredCoins = coins.filter(coin =>
     coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -93,6 +122,8 @@ function App() {
             <FavoritesBar
               onSelect={(coin) => setSelectedCoin(coin)}
               availableCoins={coins}
+              favorites={favorites}
+              onToggleFavorite={toggleFavorite}
             />
           </div>
 
@@ -103,33 +134,7 @@ function App() {
               <MarketSummary selectedCoin={selectedCoin} />
               <SecondaryMetrics />
 
-              {/* Asset List Section Header */}
-              <div className="sticky top-0 z-30 bg-sedna-dark/80 backdrop-blur-xl py-4 mb-2 -mx-4 px-4 md:mx-0 md:px-0 border-b border-white/5 md:border-none md:bg-transparent md:backdrop-blur-none mt-12">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-xl font-semibold mr-4">Market Assets</h2>
-                  <div className="relative group">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-sedna-accent transition-colors" size={16} />
-                    <input
-                      type="text"
-                      placeholder="Search assets..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-9 pr-4 py-2 bg-sedna-glass border border-sedna-glassBorder rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sedna-accent/50 w-full sm:w-64 transition-all"
-                    />
-                  </div>
-
-                  <div className="h-6 w-[1px] bg-white/10 mx-1 hidden sm:block"></div>
-
-                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg border border-sedna-glassBorder bg-sedna-glass hover:bg-white/5 text-sm text-gray-300 transition-colors">
-                    <SlidersHorizontal size={14} />
-                    View
-                  </button>
-                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg border border-sedna-glassBorder bg-sedna-glass hover:bg-white/5 text-sm text-gray-300 transition-colors">
-                    <Filter size={14} />
-                    Filter
-                  </button>
-                </div>
-              </div>
+              {/* ... Header ... */}
 
               {/* Main List */}
               {loading ? (
@@ -147,6 +152,8 @@ function App() {
                         symbol: coin.symbol,
                         price: coin.current_price
                       })}
+                      favorites={favorites.map(f => f.id)}
+                      onToggleFavorite={toggleFavorite}
                     />
                   ) : (
                     <div className="p-20 text-center text-gray-500">
@@ -157,8 +164,9 @@ function App() {
               )}
             </div>
 
+
             {/* Right Side Column */}
-            <div className="xl:col-span-1 space-y-6">
+            < div className="xl:col-span-1 space-y-6" >
               <div className="h-auto">
                 <BalanceCard />
               </div>
@@ -168,11 +176,11 @@ function App() {
               <div className="h-[500px]">
                 <WhaleWatch />
               </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+            </div >
+          </div >
+        </div >
+      </main >
+    </div >
   );
 }
 
