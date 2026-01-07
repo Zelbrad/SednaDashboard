@@ -5,9 +5,10 @@ import { ArrowUpRight, ArrowDownRight, MoreHorizontal, FileText, Star } from 'lu
 
 interface CoinListProps {
   coins: CoinData[];
+  onSelect?: (coin: CoinData) => void;
 }
 
-export const CoinList: React.FC<CoinListProps> = ({ coins }) => {
+export const CoinList: React.FC<CoinListProps> = ({ coins, onSelect }) => {
   return (
     <div className="w-full">
       {/* Table Headers */}
@@ -23,14 +24,14 @@ export const CoinList: React.FC<CoinListProps> = ({ coins }) => {
       {/* List Items */}
       <div className="space-y-1 mt-2">
         {coins.map((coin) => (
-          <CoinRow key={coin.id} coin={coin} />
+          <CoinRow key={coin.id} coin={coin} onSelect={onSelect} />
         ))}
       </div>
     </div>
   );
 };
 
-const CoinRow: React.FC<{ coin: CoinData }> = ({ coin }) => {
+const CoinRow: React.FC<{ coin: CoinData; onSelect?: (c: CoinData) => void }> = ({ coin, onSelect }) => {
   const isPositive = coin.price_change_percentage_24h >= 0;
 
   const formatCurrency = (value: number) => {
@@ -42,8 +43,11 @@ const CoinRow: React.FC<{ coin: CoinData }> = ({ coin }) => {
   };
 
   return (
-    <div className="group grid grid-cols-12 gap-4 items-center px-6 py-4 rounded-lg hover:bg-white/[0.03] transition-colors duration-200 border border-transparent hover:border-white/5 cursor-pointer">
-      
+    <div
+      onClick={() => onSelect?.(coin)}
+      className="group grid grid-cols-12 gap-4 items-center px-6 py-4 rounded-lg hover:bg-white/[0.03] transition-colors duration-200 border border-transparent hover:border-white/5 cursor-pointer"
+    >
+
       {/* Checkbox / Star */}
       <div className="col-span-1 flex items-center">
         <button className="text-gray-600 hover:text-yellow-400 transition-colors">
@@ -84,12 +88,12 @@ const CoinRow: React.FC<{ coin: CoinData }> = ({ coin }) => {
 
       {/* Actions */}
       <div className="col-span-2 flex justify-end items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-         <button className="p-2 hover:bg-white/10 rounded text-gray-400 hover:text-white">
-           <FileText size={14} />
-         </button>
-         <button className="p-2 hover:bg-white/10 rounded text-gray-400 hover:text-white">
-           <MoreHorizontal size={14} />
-         </button>
+        <button className="p-2 hover:bg-white/10 rounded text-gray-400 hover:text-white">
+          <FileText size={14} />
+        </button>
+        <button className="p-2 hover:bg-white/10 rounded text-gray-400 hover:text-white">
+          <MoreHorizontal size={14} />
+        </button>
       </div>
     </div>
   );

@@ -9,10 +9,10 @@ export const Background: React.FC = () => {
           hueShift={-130}
           noiseIntensity={0}
           scanlineIntensity={0}
-          speed={0.5}
+          speed={0.6}
           scanlineFrequency={0}
           warpAmount={0}
-          resolutionScale={1}
+          resolutionScale={1.1}
         />
       </div>
 

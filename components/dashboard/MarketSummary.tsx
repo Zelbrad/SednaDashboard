@@ -1,161 +1,164 @@
-import React from 'react';
-import { BarChart, Bar, ResponsiveContainer, Tooltip, CartesianGrid, XAxis, YAxis, ReferenceLine } from 'recharts';
+import React, { useMemo, useState } from 'react';
+import { AreaChart, Area, ResponsiveContainer, Tooltip, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { GlassCard } from '../ui/GlassCard';
 import { StatCard } from './StatCard';
-import { Wallet, PiggyBank, Download } from 'lucide-react';
+import { Wallet, TrendingUp, Download, Calendar } from 'lucide-react';
 
-// Generate more granular data to match the dense visual style of the reference image
-const generateChartData = () => {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const data = [];
-  
-  // Create 4 data points per month to simulate weekly data for a denser "bar" look
-  for (let i = 0; i < months.length; i++) {
-    for (let j = 0; j < 4; j++) {
-      const baseRepayment = 2000 + Math.random() * 5000;
-      const baseOrigination = 3000 + Math.random() * 8000;
-      
-      // Create a wave-like pattern
-      const wave = Math.sin((i * 4 + j) / 10) * 2000;
-      
-      data.push({
-        name: j === 0 ? months[i] : '', // Only show label for first week of month
-        repayment: Math.abs(baseRepayment + wave),
-        origination: -Math.abs(baseOrigination + wave * 0.8), // Negative for mirroring
-      });
-    }
+interface MarketSummaryProps {
+  selectedCoin?: {
+    name: string;
+    symbol: string;
+    price: number;
+  };
+}
+
+type TimeRange = '1D' | '5D' | '30D' | '1Y' | '5Y' | 'MAX';
+
+// Helper to generate mock price history based on range
+const generatePriceHistory = (basePrice: number, range: TimeRange) => {
+  let points = 30;
+  let volatility = 0.05;
+
+  switch (range) {
+    case '1D': points = 24; volatility = 0.02; break; // Hourly
+    case '5D': points = 60; volatility = 0.04; break; // Every 2 hours
+    case '30D': points = 30; volatility = 0.08; break; // Daily
+    case '1Y': points = 52; volatility = 0.15; break; // Weekly
+    case '5Y': points = 60; volatility = 0.30; break; // Monthly
+    case 'MAX': points = 80; volatility = 0.50; break;
   }
+
+  const data = [];
+  let currentPrice = basePrice * (1 - volatility); // Start slightly lower/different
+
+  for (let i = 0; i < points; i++) {
+    const change = (Math.random() - 0.45) * volatility;
+    currentPrice = currentPrice * (1 + change);
+    data.push({
+      date: `Pt ${i + 1}`,
+      price: currentPrice
+    });
+  }
+  // Force expand to current price at end
+  data[points - 1].price = basePrice;
   return data;
 };
 
-const chartData = generateChartData();
+export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { name: 'Bitcoin', symbol: 'BTC', price: 64000 } }) => {
+  const [timeRange, setTimeRange] = useState<TimeRange>('30D');
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-sedna-panel border border-sedna-glassBorder p-3 rounded-lg shadow-xl backdrop-blur-md">
-        {label && <p className="text-gray-400 text-xs mb-2">{label}</p>}
-        {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex items-center gap-2 text-sm mb-1">
-            <div 
-              className="w-2 h-2 rounded-full" 
-              style={{ backgroundColor: index === 0 ? '#EC4899' : '#3B82F6' }}
-            />
-            <span className="text-gray-300 capitalize">
-              {entry.dataKey === 'repayment' ? 'Repayment' : 'Origination'}:
-            </span>
-            <span className="font-mono text-white">
-              {Math.abs(entry.value).toLocaleString('en-US', { maximumFractionDigits: 0 })}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
+  const chartData = useMemo(() => generatePriceHistory(selectedCoin.price, timeRange), [selectedCoin.name, timeRange]);
 
-export const MarketSummary: React.FC = () => {
+  const startPrice = chartData[0].price;
+  const endPrice = chartData[chartData.length - 1].price;
+  const changeRaw = endPrice - startPrice;
+  const changePercent = ((changeRaw / startPrice) * 100).toFixed(2);
+  const isPositive = changeRaw >= 0;
+
+  const ranges: TimeRange[] = ['1D', '5D', '30D', '1Y', '5Y', 'MAX'];
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      
-      {/* Column 1: Stacked Stats */}
+
+      {/* Column 1: Stats Context */}
       <div className="flex flex-col gap-6">
-        <StatCard 
-          title="Pool Reserve" 
-          value="5,093 USDC" 
-          trend="+0.45%" 
-          isPositive={true} 
-          icon={Wallet} 
+        <StatCard
+          title="Current Price"
+          value={`$${selectedCoin.price.toLocaleString()}`}
+          trend={`${isPositive ? '+' : ''}${changePercent}% (${timeRange})`}
+          isPositive={isPositive}
+          icon={Wallet}
         />
-        <StatCard 
-          title="Max. Reserve" 
-          value="20,000,000 USDC" 
-          trend="+2.15%" 
-          isPositive={true} 
-          icon={PiggyBank} 
+        <StatCard
+          title="Market Cap"
+          value="$1.2T"
+          trend="+1.2%"
+          isPositive={true}
+          icon={TrendingUp}
         />
       </div>
 
-      {/* Column 2: Large Chart */}
+      {/* Column 2: Price History Chart */}
       <GlassCard className="col-span-1 lg:col-span-2 !p-0 flex flex-col min-h-[400px]" hoverEffect={false}>
-        <div className="p-6 border-b border-sedna-glassBorder flex justify-between items-center">
+        <div className="p-6 border-b border-sedna-glassBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h3 className="text-white font-semibold">Originations & Repayments</h3>
-            <div className="flex gap-4 mt-2 text-sm">
-              <span className="flex items-center gap-2 text-sedna-textMuted">
-                <span className="w-2 h-2 rounded-full bg-pink-500"></span> Repayment
-              </span>
-              <span className="flex items-center gap-2 text-sedna-textMuted">
-                <span className="w-2 h-2 rounded-full bg-blue-500"></span> Origination
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 font-bold text-xs ring-1 ring-red-500/40">
+                {selectedCoin.symbol[0]}
+              </div>
+              <div>
+                <h3 className="text-white font-semibold flex items-center gap-2">
+                  {selectedCoin.name} Price History
+                </h3>
+
+                <span className="text-xs text-sedna-textMuted uppercase tracking-wider scale-90 origin-left block">{selectedCoin.symbol} / USD</span>
+              </div>
             </div>
           </div>
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-sedna-glassBorder hover:bg-white/5 text-xs text-sedna-textMuted transition-colors">
-            <Download size={14} />
-            Download
-          </button>
+
+          <div className="flex flex-wrap gap-2">
+            {ranges.map((range) => (
+              <button
+                key={range}
+                onClick={() => setTimeRange(range)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border ${timeRange === range
+                  ? 'bg-red-500/20 text-red-500 border-red-500/50 shadow-[0_0_10px_rgba(255,0,0,0.2)]'
+                  : 'border-transparent text-sedna-textMuted hover:text-white hover:bg-white/5'
+                  }`}
+              >
+                {range}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="p-6 flex-1 w-full relative">
-          <div className="flex justify-between mb-6">
-             <div>
-                <span className="block text-xs text-sedna-textMuted uppercase tracking-wider">Repayment Total</span>
-                <span className="text-2xl font-bold text-white tracking-tight">78,127,911 USDC</span>
-             </div>
-             <div className="text-right">
-                <span className="block text-xs text-sedna-textMuted uppercase tracking-wider">Origination Total</span>
-                <span className="text-2xl font-bold text-white tracking-tight">116,449,548 USDC</span>
-             </div>
-          </div>
-
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} stackOffset="sign" barGap={0} barCategoryGap="10%">
+              <AreaChart key={`${selectedCoin.symbol}-${timeRange}`} data={chartData}>
                 <defs>
-                  <linearGradient id="repaymentGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#F43F5E" stopOpacity={1} />
-                    <stop offset="100%" stopColor="#db2777" stopOpacity={0.6} />
-                  </linearGradient>
-                  <linearGradient id="originationGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.6} />
-                    <stop offset="100%" stopColor="#06b6d4" stopOpacity={1} />
+                  <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#FF0000" stopOpacity={0.6} />
+                    <stop offset="50%" stopColor="#FF0000" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#FF0000" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
-                  axisLine={false} 
-                  tickLine={false} 
-                  tick={{ fill: '#666', fontSize: 11 }} 
-                  dy={10}
-                  interval={0}
+                <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.03)" strokeDasharray="10 10" />
+                <XAxis
+                  dataKey="date"
+                  hide={true}
                 />
-                <YAxis 
+                <YAxis
+                  domain={['auto', 'auto']}
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: '#666', fontSize: 11 }}
-                  tickFormatter={(value) => `${Math.abs(value / 1000)}k`}
+                  tickFormatter={(value) => `$${value.toLocaleString()}`}
+                  width={60}
                 />
-                <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(255,255,255,0.03)'}} />
-                
-                {/* Stacked allows them to align on the same X-axis point, expanding in opposite directions due to negative values */}
-                <Bar 
-                  dataKey="repayment" 
-                  stackId="a" 
-                  fill="url(#repaymentGradient)" 
-                  radius={[4, 4, 0, 0]}
-                  barSize={6}
+                <Tooltip
+                  cursor={{ stroke: '#fff', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  contentStyle={{
+                    backgroundColor: 'rgba(5,5,5,0.8)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 10px 40px -10px rgba(255,0,0,0.2)'
+                  }}
+                  itemStyle={{ color: '#FF0000', fontWeight: 600 }}
+                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']}
                 />
-                <Bar 
-                  dataKey="origination" 
-                  stackId="a" 
-                  fill="url(#originationGradient)" 
-                  radius={[0, 0, 4, 4]} 
-                  barSize={6}
+                <Area
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#FF0000"
+                  strokeWidth={3}
+                  activeDot={{ r: 6, strokeWidth: 0, fill: '#fff', shadowColor: '#FF0000' }}
+                  fill="url(#priceGradient)"
+                  animationDuration={1500}
+                  animationEasing="ease-in-out"
                 />
-              </BarChart>
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>

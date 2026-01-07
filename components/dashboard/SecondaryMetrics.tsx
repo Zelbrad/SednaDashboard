@@ -30,10 +30,10 @@ const orders = [
 export const SecondaryMetrics: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      
+
       {/* Column 1: Investment Chart (Wide) */}
       <GlassCard className="col-span-1 lg:col-span-2 !p-0 flex flex-col min-h-[350px]" hoverEffect={false}>
-         <div className="p-6 border-b border-sedna-glassBorder flex justify-between items-center">
+        <div className="p-6 border-b border-sedna-glassBorder flex justify-between items-center">
           <div>
             <h3 className="text-white font-semibold">Investments & Redemptions</h3>
             <div className="flex gap-4 mt-2 text-sm">
@@ -52,28 +52,28 @@ export const SecondaryMetrics: React.FC = () => {
         </div>
 
         <div className="p-6 flex-1 w-full">
-            <div className="flex justify-between mb-8">
-             <div>
-                <span className="block text-xs text-sedna-textMuted">Investment</span>
-                <span className="text-xl font-bold text-white">38,458,041 USDC</span>
-             </div>
-             <div className="text-right">
-                <span className="block text-xs text-sedna-textMuted">Redemption</span>
-                <span className="text-xl font-bold text-white">108,041 USDC</span>
-             </div>
+          <div className="flex justify-between mb-8">
+            <div>
+              <span className="block text-xs text-sedna-textMuted">Investment</span>
+              <span className="text-xl font-bold text-white">38,458,041 USDC</span>
+            </div>
+            <div className="text-right">
+              <span className="block text-xs text-sedna-textMuted">Redemption</span>
+              <span className="text-xl font-bold text-white">108,041 USDC</span>
+            </div>
           </div>
-          
+
           <div className="h-48 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={areaData}>
                 <defs>
                   <linearGradient id="colorInvest" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#a855f7" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#a855f7" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#a855f7" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorRedeem" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#22d3ee" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="#22d3ee" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -101,8 +101,8 @@ export const SecondaryMetrics: React.FC = () => {
               <div key={i} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0 hover:bg-white/5 px-2 -mx-2 rounded transition-colors cursor-default group">
                 <span className="text-sm text-gray-400 group-hover:text-white transition-colors">{order.type}</span>
                 <div className="flex items-center gap-2">
-                   <Lock size={12} className="text-sedna-textMuted" />
-                   <span className="text-sm font-mono text-white">{order.amount}</span>
+                  <Lock size={12} className="text-sedna-textMuted" />
+                  <span className="text-sm font-mono text-white">{order.amount}</span>
                 </div>
               </div>
             ))}

@@ -1,9 +1,9 @@
 import React from 'react';
 
 export const Logo: React.FC<{ className?: string }> = ({ className = "w-8 h-8" }) => (
-  <img 
+  <img
     src="/logo.png"
-    alt="Sedna Logo" 
+    alt="Sedna Logo"
     className={className}
     style={{ objectFit: 'contain' }}
   />

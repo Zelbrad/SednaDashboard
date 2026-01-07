@@ -18,6 +18,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedCoin, setSelectedCoin] = useState<CoinSelection>({ name: 'Bitcoin', symbol: 'BTC', price: 64230.50 });
 
   useEffect(() => {
     const loadData = async () => {
@@ -89,14 +90,17 @@ function App() {
 
           {/* Favorites Bar */}
           <div className="mb-8">
-            <FavoritesBar />
+            <FavoritesBar
+              onSelect={(coin) => setSelectedCoin(coin)}
+              availableCoins={coins}
+            />
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
 
             {/* Left Main Column */}
             <div className="xl:col-span-3 space-y-6">
-              <MarketSummary />
+              <MarketSummary selectedCoin={selectedCoin} />
               <SecondaryMetrics />
 
               {/* Asset List Section Header */}
@@ -136,7 +140,14 @@ function App() {
               ) : (
                 <div className="bg-sedna-glass/30 border border-sedna-glassBorder rounded-xl overflow-hidden backdrop-blur-sm min-h-[500px]">
                   {filteredCoins.length > 0 ? (
-                    <CoinList coins={filteredCoins} />
+                    <CoinList
+                      coins={filteredCoins}
+                      onSelect={(coin) => setSelectedCoin({
+                        name: coin.name,
+                        symbol: coin.symbol,
+                        price: coin.current_price
+                      })}
+                    />
                   ) : (
                     <div className="p-20 text-center text-gray-500">
                       No assets found.
@@ -163,6 +174,13 @@ function App() {
       </main>
     </div>
   );
+}
+
+
+interface CoinSelection {
+  name: string;
+  symbol: string;
+  price: number;
 }
 
 export default App;

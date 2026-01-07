@@ -158,8 +158,6 @@ export const DarkVeil: React.FC<DarkVeilProps> = ({
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
-      // @ts-ignore
-      if (gl.getExtension('WEBGL_lose_context')) gl.getExtension('WEBGL_lose_context').loseContext();
     };
   }, [hueShift, noiseIntensity, scanlineIntensity, speed, scanlineFrequency, warpAmount, resolutionScale]);
 
