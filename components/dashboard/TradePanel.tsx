@@ -8,7 +8,7 @@ export const TradePanel: React.FC = () => {
     const [activeTab, setActiveTab] = useState<Tab>('buy');
 
     return (
-        <GlassCard className="h-full p-6 flex flex-col relative overflow-hidden">
+        <GlassCard className="h-full p-6 flex flex-col relative overflow-hidden" hoverEffect={false}>
             {/* Decorational Background Gradient */}
             <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
@@ -17,9 +17,9 @@ export const TradePanel: React.FC = () => {
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`flex-1 py-2 text-sm font-medium rounded-lg capitalize transition-all duration-300 ${activeTab === tab
-                                ? 'bg-sedna-accent text-white shadow-lg'
-                                : 'text-white/50 hover:text-white hover:bg-white/5'
+                        className={`flex-1 py-2 text-sm font-medium rounded-lg capitalize transition-all duration-300 cursor-pointer ${activeTab === tab
+                            ? 'bg-sedna-accent text-white shadow-lg'
+                            : 'text-white/50 hover:text-white hover:bg-white/5'
                             }`}
                     >
                         {tab}
@@ -42,7 +42,7 @@ export const TradePanel: React.FC = () => {
                                     placeholder="0.00"
                                     className="bg-transparent text-2xl font-bold text-white outline-none w-full placeholder-white/20"
                                 />
-                                <button className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors">
+                                <button className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                                     <div className="w-5 h-5 rounded-full bg-orange-500" />
                                     <span className="font-semibold text-white">BTC</span>
                                     <ChevronDown size={14} className="text-white/50" />
@@ -52,7 +52,7 @@ export const TradePanel: React.FC = () => {
 
                         {/* Swap Indicator */}
                         <div className="flex justify-center -my-3 relative z-10">
-                            <button className="bg-sedna-dark border border-white/10 p-2 rounded-xl hover:bg-white/5 text-sedna-accent transition-colors shadow-lg">
+                            <button className="bg-sedna-dark border border-white/10 p-2 rounded-xl hover:bg-white/5 text-sedna-accent transition-colors shadow-lg cursor-pointer">
                                 <ArrowLeftRight size={18} />
                             </button>
                         </div>
@@ -69,7 +69,7 @@ export const TradePanel: React.FC = () => {
                                     placeholder="0.00"
                                     className="bg-transparent text-2xl font-bold text-white outline-none w-full placeholder-white/20"
                                 />
-                                <button className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors">
+                                <button className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                                     <div className="w-5 h-5 rounded-full bg-blue-500" />
                                     <span className="font-semibold text-white">ETH</span>
                                     <ChevronDown size={14} className="text-white/50" />
@@ -99,7 +99,7 @@ export const TradePanel: React.FC = () => {
                                         className="bg-transparent outline-none w-full placeholder-white/20"
                                     />
                                 </div>
-                                <button className="text- sedna-accent text-sm font-semibold uppercase">Max</button>
+                                <button className="text-sedna-accent text-sm font-semibold uppercase cursor-pointer">Max</button>
                             </div>
                         </div>
 
@@ -109,7 +109,7 @@ export const TradePanel: React.FC = () => {
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-2xl font-bold text-white/50">0.00</span>
-                                <button className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors">
+                                <button className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                                     <div className="w-5 h-5 rounded-full bg-orange-500" />
                                     <span className="font-semibold text-white">BTC</span>
                                     <ChevronDown size={14} className="text-white/50" />
@@ -120,7 +120,7 @@ export const TradePanel: React.FC = () => {
                 )}
             </div>
 
-            <button className="mt-6 w-full bg-sedna-accent text-white font-bold py-4 rounded-xl hover:bg-red-600 transition-all shadow-lg hover:shadow-red-900/30 flex items-center justify-center gap-2 group">
+            <button className="mt-6 w-full bg-sedna-accent text-white font-bold py-4 rounded-xl hover:bg-red-600 transition-all shadow-lg hover:shadow-red-900/30 flex items-center justify-center gap-2 group cursor-pointer">
                 <span className="capitalize">{activeTab === 'convert' ? 'Preview Swap' : `${activeTab} Now`}</span>
                 <ArrowLeftRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>

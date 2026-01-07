@@ -95,11 +95,11 @@ function App() {
             <h1 className="text-3xl font-semibold text-white tracking-tight">Anemoy Liquid Treasury Fund 1</h1>
 
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-sm font-medium hover:bg-white/10 transition-colors">
+              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-sm font-medium hover:bg-white/10 transition-colors cursor-pointer">
                 <ArrowDownToLine size={16} />
                 Report
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sedna-accent text-white text-sm font-medium shadow-[0_0_15px_rgba(255,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,0,0,0.6)] hover:scale-105 transition-all">
+              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-sedna-accent text-white text-sm font-medium shadow-[0_0_15px_rgba(255,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,0,0,0.6)] hover:scale-105 transition-all cursor-pointer">
                 Connect Wallet
               </button>
             </div>

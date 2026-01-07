@@ -15,27 +15,68 @@ interface MarketSummaryProps {
 type TimeRange = '1D' | '5D' | '30D' | '1Y' | '5Y' | 'MAX';
 
 // Helper to generate mock price history based on range
+// Helper to generate mock price history based on range with real dates
 const generatePriceHistory = (basePrice: number, range: TimeRange) => {
   let points = 30;
   let volatility = 0.05;
+  let intervalMs = 24 * 60 * 60 * 1000; // Default daily
 
   switch (range) {
-    case '1D': points = 24; volatility = 0.02; break; // Hourly
-    case '5D': points = 60; volatility = 0.04; break; // Every 2 hours
-    case '30D': points = 30; volatility = 0.08; break; // Daily
-    case '1Y': points = 52; volatility = 0.15; break; // Weekly
-    case '5Y': points = 60; volatility = 0.30; break; // Monthly
-    case 'MAX': points = 80; volatility = 0.50; break;
+    case '1D':
+      points = 24;
+      volatility = 0.02;
+      intervalMs = 60 * 60 * 1000; // Hourly
+      break;
+    case '5D':
+      points = 60;
+      volatility = 0.04;
+      intervalMs = 2 * 60 * 60 * 1000; // Every 2 hours
+      break;
+    case '30D':
+      points = 30;
+      volatility = 0.08;
+      intervalMs = 24 * 60 * 60 * 1000; // Daily
+      break;
+    case '1Y':
+      points = 52;
+      volatility = 0.15;
+      intervalMs = 7 * 24 * 60 * 60 * 1000; // Weekly
+      break;
+    case '5Y':
+      points = 60;
+      volatility = 0.30;
+      intervalMs = 30 * 24 * 60 * 60 * 1000; // Monthly (approx)
+      break;
+    case 'MAX':
+      points = 80;
+      volatility = 0.50;
+      intervalMs = 90 * 24 * 60 * 60 * 1000; // Quarterly
+      break;
   }
 
   const data = [];
   let currentPrice = basePrice * (1 - volatility); // Start slightly lower/different
+  const now = new Date();
 
   for (let i = 0; i < points; i++) {
+    // Calculate date backwards from now
+    // i=0 is the oldest point, i=points-1 is now. 
+    // Wait, usually i=0 is oldest. let's calculate time for each point.
+    // Time = now - (points - 1 - i) * interval
+    const time = new Date(now.getTime() - ((points - 1 - i) * intervalMs));
+
     const change = (Math.random() - 0.45) * volatility;
     currentPrice = currentPrice * (1 + change);
+
+    // Format date based on range
+    let dateLabel = '';
+    if (range === '1D') dateLabel = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    else if (range === '5D' || range === '30D') dateLabel = time.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    else dateLabel = time.toLocaleDateString([], { month: 'short', year: '2-digit' });
+
     data.push({
-      date: `Pt ${i + 1}`,
+      date: dateLabel,
+      fullDate: time.toLocaleString(),
       price: currentPrice
     });
   }
@@ -101,7 +142,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border ${timeRange === range
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer border ${timeRange === range
                   ? 'bg-red-500/20 text-red-500 border-red-500/50 shadow-[0_0_10px_rgba(255,0,0,0.2)]'
                   : 'border-transparent text-sedna-textMuted hover:text-white hover:bg-white/5'
                   }`}
@@ -113,7 +154,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
         </div>
 
         <div className="p-6 flex-1 w-full relative">
-          <div className="h-64 w-full">
+          <div className="h-64 w-full cursor-pointer">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart key={`${selectedCoin.symbol}-${timeRange}`} data={chartData}>
                 <defs>
@@ -146,6 +187,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
                     boxShadow: '0 10px 40px -10px rgba(255,0,0,0.2)'
                   }}
                   itemStyle={{ color: '#FF0000', fontWeight: 600 }}
+                  labelStyle={{ color: '#999', marginBottom: '4px' }}
                   formatter={(value: number) => [`$${value.toFixed(2)}`, 'Price']}
                 />
                 <Area

@@ -4,7 +4,7 @@ import { Wallet, ArrowUpRight, ArrowDownRight, CreditCard } from 'lucide-react';
 
 export const BalanceCard: React.FC = () => {
     return (
-        <GlassCard className="p-6 h-full flex flex-col justify-between relative overflow-hidden">
+        <GlassCard className="p-6 h-full flex flex-col justify-between relative overflow-hidden" hoverEffect={false}>
             {/* Decorational Background Gradient */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-sedna-accent/10 rounded-full blur-3xl -translate-y-32 translate-x-32 pointer-events-none" />
 
@@ -18,7 +18,7 @@ export const BalanceCard: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="mb-2">
+                <div className="mb-2 cursor-pointer">
                     <span className="text-4xl font-bold text-white tracking-tighter">
                         $124,532.00
                     </span>
@@ -47,10 +47,10 @@ export const BalanceCard: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="mt-4 flex gap-3">
-                <button className="flex-1 bg-sedna-accent text-white font-medium py-3 rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-900/20">
+                <button className="flex-1 bg-sedna-accent text-white font-medium py-3 rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-900/20 cursor-pointer">
                     Deposit
                 </button>
-                <button className="flex-1 bg-white/5 text-white font-medium py-3 rounded-xl hover:bg-white/10 transition-colors border border-white/5">
+                <button className="flex-1 bg-white/5 text-white font-medium py-3 rounded-xl hover:bg-white/10 transition-colors border border-white/5 cursor-pointer">
                     Withdraw
                 </button>
             </div>

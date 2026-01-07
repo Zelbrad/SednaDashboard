@@ -7,11 +7,11 @@ interface GlassCardProps {
   hoverEffect?: boolean;
 }
 
-export const GlassCard: React.FC<GlassCardProps> = ({ 
-  children, 
-  className = "", 
+export const GlassCard: React.FC<GlassCardProps> = ({
+  children,
+  className = "",
   onClick,
-  hoverEffect = true 
+  hoverEffect = true
 }) => {
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +25,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   };
 
   return (
-    <div 
+    <div
       ref={divRef}
       onMouseMove={handleMouseMove}
       onClick={onClick}
@@ -39,14 +39,14 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       `}
     >
       {/* Spotlight Border Effect */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
-          background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.06), transparent 40%)`,
+          background: `radial-gradient(700px circle at var(--mouse-x) var(--mouse-y), rgba(3, 3, 3, 0.57), transparent 40%)`,
           zIndex: 1
         }}
       />
-      
+
       {/* Content Layer */}
       <div className="relative z-10 h-full">
         {children}
