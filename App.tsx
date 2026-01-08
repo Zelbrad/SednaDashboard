@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Sidebar } from './components/layout/Sidebar';
 import { Background } from './components/layout/Background';
 import { MarketSummary } from './components/dashboard/MarketSummary';
-import { SecondaryMetrics } from './components/dashboard/SecondaryMetrics';
 import { CoinList } from './components/dashboard/CoinList';
 import { FavoritesBar } from './components/dashboard/FavoritesBar';
 import { BalanceCard } from './components/dashboard/BalanceCard';
@@ -17,10 +16,10 @@ import { Logo } from './components/ui/Logo';
 
 // Mock favorites moved here
 const initialFavorites = [
-  { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', price: 64230.50, change: 2.4, isUp: true },
-  { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', price: 3450.12, change: -1.2, isUp: false },
-  { id: 'solana', symbol: 'SOL', name: 'Solana', price: 145.60, change: 5.8, isUp: true },
-  { id: 'cardano', symbol: 'ADA', name: 'Cardano', price: 0.45, change: 0.5, isUp: true },
+  { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', price: 64230.50, change: 2.4, isUp: true, image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' },
+  { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', price: 3450.12, change: -1.2, isUp: false, image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png' },
+  { id: 'solana', symbol: 'SOL', name: 'Solana', price: 145.60, change: 5.8, isUp: true, image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png' },
+  { id: 'cardano', symbol: 'ADA', name: 'Cardano', price: 0.45, change: 0.5, isUp: true, image: 'https://assets.coingecko.com/coins/images/975/large/cardano.png' },
 ];
 
 function App() {
@@ -28,7 +27,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedCoin, setSelectedCoin] = useState<CoinSelection>({ name: 'Bitcoin', symbol: 'BTC', price: 64230.50 });
+  const [selectedCoin, setSelectedCoin] = useState<CoinSelection>({ name: 'Bitcoin', symbol: 'BTC', price: 64230.50, image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' });
   const [favorites, setFavorites] = useState(initialFavorites);
 
   useEffect(() => {
@@ -54,7 +53,8 @@ function App() {
         name: coin.name,
         price: coin.current_price,
         change: coin.price_change_percentage_24h,
-        isUp: coin.price_change_percentage_24h >= 0
+        isUp: coin.price_change_percentage_24h >= 0,
+        image: coin.image
       };
       setFavorites(prev => [...prev, newFavorite]);
     }
@@ -92,7 +92,7 @@ function App() {
 
           {/* Dashboard Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <h1 className="text-3xl font-semibold text-white tracking-tight">Anemoy Liquid Treasury Fund 1</h1>
+            <h1 className="text-3xl font-semibold text-white tracking-tight ml-[3px]">Dashboard</h1>
 
             <div className="flex items-center gap-3">
               <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/5 text-sm font-medium hover:bg-white/10 transition-colors cursor-pointer">
@@ -103,18 +103,6 @@ function App() {
                 Connect Wallet
               </button>
             </div>
-          </div>
-
-          {/* Sub Navigation */}
-          <div className="flex gap-6 border-b border-white/5 mb-8 overflow-x-auto">
-            {['Overview', 'Assets', 'Liquidity', 'Reports', 'Data', 'Fees'].map((item, i) => (
-              <button
-                key={item}
-                className={`pb-3 text-sm font-medium transition-colors whitespace-nowrap ${i === 2 ? 'text-white border-b-2 border-sedna-accent' : 'text-sedna-textMuted hover:text-white'}`}
-              >
-                {item}
-              </button>
-            ))}
           </div>
 
           {/* Favorites Bar */}
@@ -132,7 +120,6 @@ function App() {
             {/* Left Main Column */}
             <div className="xl:col-span-3 space-y-6">
               <MarketSummary selectedCoin={selectedCoin} />
-              <SecondaryMetrics />
 
               {/* ... Header ... */}
 
@@ -150,7 +137,8 @@ function App() {
                       onSelect={(coin) => setSelectedCoin({
                         name: coin.name,
                         symbol: coin.symbol,
-                        price: coin.current_price
+                        price: coin.current_price,
+                        image: coin.image
                       })}
                       favorites={favorites.map(f => f.id)}
                       onToggleFavorite={toggleFavorite}
@@ -189,6 +177,7 @@ interface CoinSelection {
   name: string;
   symbol: string;
   price: number;
+  image?: string;
 }
 
 export default App;

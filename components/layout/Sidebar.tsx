@@ -27,8 +27,8 @@ export const Sidebar: React.FC = () => {
             key={item.label}
             className={`
               w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200
-              ${item.active 
-                ? 'bg-sedna-accentDim text-sedna-accent shadow-[0_0_10px_rgba(255,0,0,0.1)]' 
+              ${item.active
+                ? 'bg-sedna-accentDim text-sedna-accent shadow-[0_0_10px_rgba(255,0,0,0.1)]'
                 : 'text-sedna-textMuted hover:text-white hover:bg-white/5'
               }
             `}
@@ -41,8 +41,8 @@ export const Sidebar: React.FC = () => {
         <div className="pt-8 px-4">
           <h3 className="text-xs font-semibold text-sedna-textMuted uppercase tracking-wider mb-4">Workflows</h3>
           <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-sedna-textMuted hover:text-white hover:bg-white/5 transition-colors">
-             <Settings size={18} />
-             <span>Settings</span>
+            <Settings size={18} />
+            <span>Settings</span>
           </button>
         </div>
       </div>

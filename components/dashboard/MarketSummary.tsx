@@ -9,51 +9,78 @@ interface MarketSummaryProps {
     name: string;
     symbol: string;
     price: number;
+    image?: string;
   };
 }
 
+// ... existing code ...
+
+// inside component return
+
+
 type TimeRange = '1D' | '5D' | '30D' | '1Y' | '5Y' | 'MAX';
+
+// Custom cursor component for the chart
+const CustomCursor = (props: any) => {
+  const { points, width, height } = props;
+  const { x, y } = points[0];
+
+  return (
+    <g>
+      <defs>
+        <linearGradient id="cursorGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255, 0, 0, 0)" />
+          <stop offset="50%" stopColor="rgba(255, 0, 0, 1)" />
+          <stop offset="100%" stopColor="rgba(255, 0, 0, 0)" />
+        </linearGradient>
+      </defs>
+      <rect x={x - 1} y={0} width={2} height={height} fill="url(#cursorGradient)" />
+    </g>
+  );
+};
+
 
 // Helper to generate mock price history based on range
 // Helper to generate mock price history based on range with real dates
 const generatePriceHistory = (basePrice: number, range: TimeRange) => {
-  let points = 30;
+  let points = 100;
   let volatility = 0.05;
-  let intervalMs = 24 * 60 * 60 * 1000; // Default daily
+  let durationMs = 24 * 60 * 60 * 1000; // Default 1 day
 
   switch (range) {
     case '1D':
-      points = 24;
+      points = 96; // ~15 min intervals
       volatility = 0.02;
-      intervalMs = 60 * 60 * 1000; // Hourly
+      durationMs = 24 * 60 * 60 * 1000;
       break;
     case '5D':
-      points = 60;
+      points = 120; // Hourly
       volatility = 0.04;
-      intervalMs = 2 * 60 * 60 * 1000; // Every 2 hours
+      durationMs = 5 * 24 * 60 * 60 * 1000;
       break;
     case '30D':
-      points = 30;
+      points = 180; // ~4 hours
       volatility = 0.08;
-      intervalMs = 24 * 60 * 60 * 1000; // Daily
+      durationMs = 30 * 24 * 60 * 60 * 1000;
       break;
     case '1Y':
-      points = 52;
+      points = 365; // Daily
       volatility = 0.15;
-      intervalMs = 7 * 24 * 60 * 60 * 1000; // Weekly
+      durationMs = 365 * 24 * 60 * 60 * 1000;
       break;
     case '5Y':
-      points = 60;
+      points = 260; // Weekly
       volatility = 0.30;
-      intervalMs = 30 * 24 * 60 * 60 * 1000; // Monthly (approx)
+      durationMs = 5 * 365 * 24 * 60 * 60 * 1000;
       break;
     case 'MAX':
-      points = 80;
+      points = 300;
       volatility = 0.50;
-      intervalMs = 90 * 24 * 60 * 60 * 1000; // Quarterly
+      durationMs = 10 * 365 * 24 * 60 * 60 * 1000; // 10 years
       break;
   }
 
+  const intervalMs = durationMs / points;
   const data = [];
   let currentPrice = basePrice * (1 - volatility); // Start slightly lower/different
   const now = new Date();
@@ -70,9 +97,11 @@ const generatePriceHistory = (basePrice: number, range: TimeRange) => {
 
     // Format date based on range
     let dateLabel = '';
-    if (range === '1D') dateLabel = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    else if (range === '5D' || range === '30D') dateLabel = time.toLocaleDateString([], { month: 'short', day: 'numeric' });
-    else dateLabel = time.toLocaleDateString([], { month: 'short', year: '2-digit' });
+    if (range === '1D') {
+      dateLabel = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else {
+      dateLabel = time.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+    }
 
     data.push({
       date: dateLabel,
@@ -124,9 +153,17 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
         <div className="p-6 border-b border-sedna-glassBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 font-bold text-xs ring-1 ring-red-500/40">
-                {selectedCoin.symbol[0]}
-              </div>
+              {selectedCoin.image ? (
+                <img
+                  src={selectedCoin.image}
+                  alt={selectedCoin.name}
+                  className="w-8 h-8 rounded-full shadow-lg p-0.5 bg-black/20"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 font-bold text-xs ring-1 ring-red-500/40">
+                  {selectedCoin.symbol[0]}
+                </div>
+              )}
               <div>
                 <h3 className="text-white font-semibold flex items-center gap-2">
                   {selectedCoin.name} Price History
@@ -178,7 +215,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
                   width={60}
                 />
                 <Tooltip
-                  cursor={{ stroke: '#fff', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  cursor={<CustomCursor />}
                   contentStyle={{
                     backgroundColor: 'rgba(5,5,5,0.8)',
                     border: '1px solid rgba(255,255,255,0.1)',
@@ -195,7 +232,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
                   dataKey="price"
                   stroke="#FF0000"
                   strokeWidth={3}
-                  activeDot={{ r: 6, strokeWidth: 0, fill: '#fff', shadowColor: '#FF0000' }}
+                  activeDot={false}
                   fill="url(#priceGradient)"
                   animationDuration={1500}
                   animationEasing="ease-in-out"

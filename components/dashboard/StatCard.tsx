@@ -1,6 +1,6 @@
 import React from 'react';
 import { GlassCard } from '../ui/GlassCard';
-import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react';
+import { LucideIcon, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
@@ -26,7 +26,7 @@ export const StatCard: React.FC<StatCardProps> = ({ title, value, trend, isPosit
       <div className="mt-4">
         <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">{value}</h3>
         <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium ${isPositive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-          {isPositive ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+          {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
           {trend}
         </div>
       </div>

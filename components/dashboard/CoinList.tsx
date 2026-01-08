@@ -72,7 +72,7 @@ const CoinRow: React.FC<CoinRowProps> = ({ coin, onSelect, isFavorite, onToggleF
       {/* Checkbox / Star */}
       <div className="col-span-1 flex items-center">
         <button
-          className={`transition-colors ${isFavorite ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}`}
+          className={`transition-colors cursor-pointer ${isFavorite ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}`}
           onClick={handleStarClick}
         >
           <Star size={16} fill={isFavorite ? "currentColor" : "none"} />
