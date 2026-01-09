@@ -20,7 +20,7 @@ export const CoinList: React.FC<CoinListProps> = ({ coins, onSelect, favorites =
         {/* ... */}
         <div className="col-span-2 text-right">Price</div>
         <div className="col-span-2 text-right">Change (24h)</div>
-        <div className="col-span-2 text-right">Trend</div>
+        <div className="hidden md:block col-span-2 text-right">Trend</div>
         <div className="col-span-2 text-right">Actions</div>
       </div>
 
@@ -102,7 +102,7 @@ const CoinRow: React.FC<CoinRowProps> = ({ coin, onSelect, isFavorite, onToggleF
       </div>
 
       {/* Trend (Sparkline) */}
-      <div className="col-span-2 h-10 flex items-center justify-end opacity-60 group-hover:opacity-100 transition-opacity">
+      <div className="hidden md:flex col-span-2 h-10 items-center justify-end opacity-60 group-hover:opacity-100 transition-opacity">
         {coin.sparkline_in_7d && (
           <div className="w-24 h-full">
             <Sparkline data={coin.sparkline_in_7d.price} isPositive={isPositive} />

@@ -131,7 +131,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
       {/* Column 1: Stats Context */}
-      <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-1 gap-6">
         <StatCard
           title="Current Price"
           value={`$${selectedCoin.price.toLocaleString()}`}
@@ -149,7 +149,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
       </div>
 
       {/* Column 2: Price History Chart */}
-      <GlassCard className="col-span-1 lg:col-span-2 !p-0 flex flex-col min-h-[400px]" hoverEffect={false}>
+      <GlassCard className="lg:col-span-2 !p-0 flex flex-col min-h-[400px]" hoverEffect={false}>
         <div className="p-6 border-b border-sedna-glassBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">
