@@ -2,13 +2,18 @@ import React from 'react';
 import { Home, BarChart2, Wallet, CreditCard, Settings, LogOut, ArrowRightLeft } from 'lucide-react';
 import { Logo } from '../ui/Logo';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab = 'Home', onTabChange }) => {
   const navItems = [
-    { icon: Home, label: 'Home', active: false },
-    { icon: ArrowRightLeft, label: 'Transactions', active: true },
-    { icon: BarChart2, label: 'Market', active: false },
-    { icon: Wallet, label: 'Accounts', active: false },
-    { icon: CreditCard, label: 'Cards', active: false },
+    { icon: Home, label: 'Dashboard', id: 'Dashboard' },
+    { icon: ArrowRightLeft, label: 'Transactions', id: 'Transactions' },
+    { icon: BarChart2, label: 'Market', id: 'Market' },
+    { icon: Wallet, label: 'Accounts', id: 'Accounts' },
+    { icon: CreditCard, label: 'Cards', id: 'Cards' },
   ];
 
   return (
@@ -24,10 +29,11 @@ export const Sidebar: React.FC = () => {
       <div className="flex-1 px-4 space-y-1">
         {navItems.map((item) => (
           <button
-            key={item.label}
+            key={item.id}
+            onClick={() => onTabChange?.(item.id)}
             className={`
-              w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200
-              ${item.active
+              w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer
+              ${activeTab === item.id
                 ? 'bg-sedna-accentDim text-sedna-accent shadow-[0_0_10px_rgba(255,0,0,0.1)]'
                 : 'text-sedna-textMuted hover:text-white hover:bg-white/5'
               }
@@ -52,7 +58,7 @@ export const Sidebar: React.FC = () => {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 border border-white/10" />
           <div className="flex-1 overflow-hidden">
-            <p className="text-sm font-medium text-white truncate">Mercury Design</p>
+            <p className="text-sm font-medium text-white truncate">Guillermo Pérez</p>
             <p className="text-xs text-gray-500 truncate">Pro Plan</p>
           </div>
           <LogOut size={16} className="text-gray-500 cursor-pointer hover:text-white" />

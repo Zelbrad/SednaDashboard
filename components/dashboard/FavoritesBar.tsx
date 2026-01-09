@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import AnimatedList from '../AnimatedList';
 import { GlassCard } from '../ui/GlassCard';
 import { TrendingUp, TrendingDown, Plus, Trash2 } from 'lucide-react';
 
@@ -34,13 +35,18 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
         };
 
         // ... existing scroll handler ...
-        const handleScroll = () => {
+        const handleScroll = (e: Event) => {
+            const target = e.target as HTMLElement;
+            // Don't close if scrolling inside the favorites menu
+            if (target.closest && target.closest('.favorites-portal-menu')) {
+                return;
+            }
             if (isAddMenuOpen) setIsAddMenuOpen(false);
             if (contextMenu) setContextMenu(null);
         };
 
         window.addEventListener('click', handleClick);
-        window.addEventListener('scroll', handleScroll, true);
+        window.addEventListener('scroll', handleScroll, true); // Capture phase is important here
 
         return () => {
             window.removeEventListener('click', handleClick);
@@ -83,18 +89,24 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
             return;
         }
 
+        // Limit to max 4 favorites
+        if (favorites.length >= 4) {
+            setIsAddMenuOpen(false);
+            return;
+        }
+
         onToggleFavorite(coin);
         setIsAddMenuOpen(false);
     };
 
     return (
-        <div className="w-full overflow-x-auto pb-4 pt-2 no-scrollbar">
-            <div className="flex space-x-4 min-w-max px-1">
+        <div className="w-full pb-4 pt-2">
+            <div className="flex gap-4 px-1">
                 {/* Add New Favorite Button & Dropdown Container */}
-                <div className="relative group" ref={addMenuRef}>
+                <div className="relative group w-40 shrink-0" ref={addMenuRef}>
                     <GlassCard
                         hoverEffect={false}
-                        className="w-40 h-24 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 !shadow-none !translate-y-0"
+                        className="w-full h-24 flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 !shadow-none !translate-y-0"
                         onClick={handleAddClick}
                     >
                         <div className="flex flex-col items-center justify-center h-full w-full">
@@ -106,35 +118,37 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
                     </GlassCard>
                 </div>
 
-                {favorites.map((crypto) => (
-                    <div
-                        key={crypto.id}
-                        onClick={() => onSelect?.(crypto)}
-                        onContextMenu={(e) => handleContextMenu(e, crypto.id)}
-                        className={`
-                            relative w-48 h-24 p-4 rounded-2xl border border-white/5 bg-sedna-glass/10 backdrop-blur-md 
-                            flex flex-col justify-between cursor-pointer 
-                            hover:bg-white/5 hover:border-sedna-accent/30 transition-all
-                            ${contextMenu?.id === crypto.id ? 'border-sedna-accent ring-1 ring-sedna-accent' : ''}
-                        `}
-                    >
-                        <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${crypto.isUp ? 'bg-green-500' : 'bg-red-500'}`} />
-                                <span className="font-bold text-white">{crypto.symbol}</span>
+                <div className="flex-1 grid grid-cols-4 gap-4">
+                    {favorites.slice(0, 4).map((crypto) => (
+                        <div
+                            key={crypto.id}
+                            onClick={() => onSelect?.(crypto)}
+                            onContextMenu={(e) => handleContextMenu(e, crypto.id)}
+                            className={`
+                                relative w-full h-24 p-4 rounded-2xl border border-white/5 bg-sedna-glass/10 backdrop-blur-md 
+                                flex flex-col justify-between cursor-pointer 
+                                hover:bg-white/5 hover:border-sedna-accent/30 transition-all
+                                ${contextMenu?.id === crypto.id ? 'border-sedna-accent ring-1 ring-sedna-accent' : ''}
+                            `}
+                        >
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-2 h-2 rounded-full ${crypto.isUp ? 'bg-green-500' : 'bg-red-500'}`} />
+                                    <span className="font-bold text-white">{crypto.symbol}</span>
+                                </div>
+                                <span className={`text-xs flex items-center ${crypto.isUp ? 'text-green-400' : 'text-red-400'}`}>
+                                    {crypto.isUp ? <TrendingUp size={12} className="mr-1" /> : <TrendingDown size={12} className="mr-1" />}
+                                    {Math.abs(crypto.change)}%
+                                </span>
                             </div>
-                            <span className={`text-xs flex items-center ${crypto.isUp ? 'text-green-400' : 'text-red-400'}`}>
-                                {crypto.isUp ? <TrendingUp size={12} className="mr-1" /> : <TrendingDown size={12} className="mr-1" />}
-                                {Math.abs(crypto.change)}%
-                            </span>
+                            <div className="mt-2 text-right">
+                                <span className="text-xl font-bold text-white tracking-wide">
+                                    ${crypto.price.toLocaleString()}
+                                </span>
+                            </div>
                         </div>
-                        <div className="mt-2 text-right">
-                            <span className="text-xl font-bold text-white tracking-wide">
-                                ${crypto.price.toLocaleString()}
-                            </span>
-                        </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             {/* GLOBAL PORTAL-LIKE OVERLAYS */}
@@ -142,33 +156,40 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
 
             {isAddMenuOpen && addMenuPos && createPortal(
                 <div
-                    className="favorites-portal-menu fixed z-[9999] w-64 max-h-64 overflow-y-auto bg-sedna-dark border border-white/10 rounded-xl shadow-2xl p-2 no-scrollbar animate-in fade-in zoom-in-95 duration-100"
+                    className="favorites-portal-menu fixed z-[9999] w-72 bg-sedna-dark border border-white/10 rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-100"
                     style={{
                         left: addMenuPos.x,
                         top: addMenuPos.y + 10 // Add a little offset
                     }}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider sticky top-0 bg-sedna-dark py-1">Available Assets</div>
+                    <div className="text-xs font-semibold text-gray-500 px-4 pt-3 pb-2 uppercase tracking-wider bg-sedna-dark z-10 border-b border-white/5">Available Assets</div>
                     {availableCoins.length > 0 ? (
-                        availableCoins.map(coin => (
-                            <button
-                                key={coin.id}
-                                onClick={() => handleAddFavorite(coin)}
-                                className="w-full flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors group text-left"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <img src={coin.image} alt={coin.name} className="w-6 h-6 rounded-full" />
-                                    <div>
-                                        <span className="block text-sm text-gray-300 group-hover:text-white font-medium">{coin.symbol.toUpperCase()}</span>
-                                        <span className="block text-[10px] text-gray-500">{coin.name}</span>
+                        <div className="p-2">
+                            <AnimatedList
+                                items={availableCoins}
+                                onItemSelect={handleAddFavorite}
+                                showGradients={false}
+                                displayScrollbar={true}
+                                className="w-full"
+                                listClassName="max-h-[220px] overflow-y-auto !scrollbar-thin"
+                                itemClassName="bg-transparent p-0"
+                                renderItem={(coin, index, isSelected) => (
+                                    <div className={`w-full flex items-center justify-between p-2 rounded-lg transition-colors group text-left ${isSelected ? 'bg-white/10' : 'hover:bg-white/5'}`}>
+                                        <div className="flex items-center gap-3">
+                                            <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full shadow-sm" />
+                                            <div>
+                                                <span className="block text-sm text-gray-200 group-hover:text-white font-semibold tracking-tight">{coin.symbol.toUpperCase()}</span>
+                                                <span className="block text-[10px] text-gray-500 font-medium">{coin.name}</span>
+                                            </div>
+                                        </div>
+                                        <span className="text-xs text-gray-400 font-mono font-medium">${coin.current_price.toLocaleString()}</span>
                                     </div>
-                                </div>
-                                <span className="text-xs text-gray-500 font-mono">${coin.current_price.toLocaleString()}</span>
-                            </button>
-                        ))
+                                )}
+                            />
+                        </div>
                     ) : (
-                        <div className="p-4 text-center text-xs text-gray-500">
+                        <div className="p-8 text-center text-xs text-gray-500">
                             Loading coins...
                         </div>
                     )}
