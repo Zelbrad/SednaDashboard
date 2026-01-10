@@ -9,6 +9,7 @@ import { WhaleWatch } from './components/dashboard/WhaleWatch';
 import { fetchMarketData } from './services/api';
 import { CoinData } from './types';
 import { Accounts } from './components/dashboard/Accounts';
+import { Transactions } from './components/dashboard/Transactions';
 import { Loader2, Search, Filter, SlidersHorizontal, ArrowDownToLine, Menu } from 'lucide-react';
 import { Logo } from './components/ui/Logo';
 
@@ -94,8 +95,11 @@ function App() {
       `}>
         <div className="w-full max-w-[95%] xl:max-w-[90%] 2xl:max-w-[85%] mx-auto">
 
+
           {activeTab === 'Accounts' ? (
             <Accounts />
+          ) : activeTab === 'Transactions' ? (
+            <Transactions />
           ) : (
             <>
               {/* Dashboard Header */}
@@ -160,11 +164,11 @@ function App() {
 
 
                 {/* Right Side Column */}
-                <div className="xl:col-span-1 space-y-6">
-                  <div className="h-auto">
+                <div className="xl:col-span-1 flex flex-col gap-6">
+                  <div className="h-auto hidden min-[2800px]:block shrink-0">
                     <TradePanel />
                   </div>
-                  <div className="h-[500px]">
+                  <div className="flex-1 min-h-[500px]">
                     <WhaleWatch />
                   </div>
                 </div>

@@ -45,7 +45,7 @@ export const WhaleWatch: React.FC = () => {
     }, []);
 
     return (
-        <GlassCard className="h-full p-6 flex flex-col">
+        <GlassCard className="h-full p-6 flex flex-col" hoverEffect={false}>
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                     <Disc className="text-blue-400" size={20} />
@@ -65,8 +65,8 @@ export const WhaleWatch: React.FC = () => {
             <div className="flex-1 overflow-visible space-y-3">
                 {transactions.map((tx) => (
                     <div key={tx.id} className={`p-3 rounded-xl border flex items-center justify-between transition-all animate-in slide-in-from-top-2 fade-in duration-500 ${tx.isWhale
-                            ? 'bg-gradient-to-r from-sedna-accent/10 to-transparent border-sedna-accent/20'
-                            : 'bg-white/5 border-white/5'
+                        ? 'bg-gradient-to-r from-sedna-accent/10 to-transparent border-sedna-accent/20'
+                        : 'bg-white/5 border-white/5'
                         }`}>
                         <div className="flex flex-col">
                             <span className="text-xs text-white/40 font-mono">{tx.time}</span>

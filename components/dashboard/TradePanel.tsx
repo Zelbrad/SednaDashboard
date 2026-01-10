@@ -9,8 +9,6 @@ export const TradePanel: React.FC = () => {
 
     return (
         <GlassCard className="h-full p-6 flex flex-col relative overflow-hidden" hoverEffect={false}>
-            {/* Decorational Background Gradient */}
-            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
 
             <div className="flex bg-black/20 p-1 rounded-xl mb-6 relative z-10">
                 {(['buy', 'sell', 'convert'] as Tab[]).map((tab) => (
