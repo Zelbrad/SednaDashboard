@@ -17,51 +17,53 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab = 'Home', onTabChang
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 border-r border-sedna-glassBorder bg-sedna-glass backdrop-blur-md flex flex-col z-50 hidden lg:flex">
+    <aside className="fixed left-0 top-0 h-screen border-r border-sedna-glassBorder bg-sedna-glass backdrop-blur-md flex flex-col z-50 hidden lg:flex transition-all duration-300 ease-in-out w-20 hover:w-64 group overflow-hidden">
       {/* Logo */}
-      <div className="p-8 pb-8">
+      <div className="h-24 flex items-center pl-6 transition-all">
         <div className="flex items-center gap-3">
-          <Logo className="w-10 h-10 drop-shadow-[0_0_10px_rgba(255,0,0,0.5)]" />
+          <Logo className="w-8 h-8 drop-shadow-[0_0_10px_rgba(255,0,0,0.5)] shrink-0" />
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 px-4 space-y-1">
+      <div className="flex-1 px-3 space-y-1 transition-all">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => onTabChange?.(item.id)}
             className={`
-              w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer
+              w-full flex items-center pl-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer overflow-hidden
               ${activeTab === item.id
                 ? 'bg-sedna-accentDim text-sedna-accent shadow-[0_0_10px_rgba(255,0,0,0.1)]'
                 : 'text-sedna-textMuted hover:text-white hover:bg-white/5'
               }
             `}
           >
-            <item.icon size={18} />
-            {item.label}
+            <item.icon size={20} className="shrink-0" />
+            <span className="opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-[150px] ml-0 group-hover:ml-3 transition-all duration-300 overflow-hidden whitespace-nowrap text-left">
+              {item.label}
+            </span>
           </button>
         ))}
 
-        <div className="pt-8 px-4">
-          <h3 className="text-xs font-semibold text-sedna-textMuted uppercase tracking-wider mb-4">Workflows</h3>
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-sedna-textMuted hover:text-white hover:bg-white/5 transition-colors">
-            <Settings size={18} />
-            <span>Settings</span>
+        <div className="pt-8 px-0">
+          <h3 className="text-[10px] font-semibold text-sedna-textMuted uppercase tracking-wider mb-4 opacity-0 group-hover:opacity-100 transition-opacity pl-6 whitespace-nowrap overflow-hidden h-4 group-hover:h-auto">Workflows</h3>
+          <button className="w-full flex items-center pl-4 py-3 rounded-lg text-sm font-medium text-sedna-textMuted hover:text-white hover:bg-white/5 transition-colors overflow-hidden">
+            <Settings size={20} className="shrink-0" />
+            <span className="opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-[150px] ml-0 group-hover:ml-3 transition-all duration-300 overflow-hidden whitespace-nowrap text-left">Settings</span>
           </button>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="p-6 border-t border-sedna-glassBorder">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 border border-white/10" />
-          <div className="flex-1 overflow-hidden">
+      <div className="p-4 group-hover:p-6 border-t border-sedna-glassBorder">
+        <div className="flex items-center pl-4">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 border border-white/10 shrink-0" />
+          <div className="flex-1 overflow-hidden opacity-0 group-hover:opacity-100 max-w-0 group-hover:max-w-[150px] ml-0 group-hover:ml-3 transition-all duration-300">
             <p className="text-sm font-medium text-white truncate">Guillermo Pérez</p>
             <p className="text-xs text-gray-500 truncate">Pro Plan</p>
           </div>
-          <LogOut size={16} className="text-gray-500 cursor-pointer hover:text-white" />
+          <LogOut size={18} className="text-gray-500 cursor-pointer hover:text-white shrink-0 opacity-0 group-hover:opacity-100 transition-opacity hidden group-hover:block ml-2" />
         </div>
       </div>
     </aside>

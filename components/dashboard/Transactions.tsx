@@ -3,6 +3,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { ArrowUpRight, ArrowDownRight, RefreshCw, Search, CheckCircle, Clock, ArrowDownToLine } from 'lucide-react';
 import { format } from 'date-fns';
 import { TradePanel } from './TradePanel';
+import { OrderBook } from './OrderBook';
 
 type TransactionType = 'deposit' | 'withdrawal' | 'trade';
 type TransactionStatus = 'completed' | 'pending' | 'failed';
@@ -214,7 +215,8 @@ export const Transactions: React.FC = () => {
                     </GlassCard>
                 </div>
 
-                <div className="xl:col-span-1">
+                <div className="xl:col-span-1 space-y-6">
+                    <OrderBook />
                     <TradePanel />
                 </div>
             </div>

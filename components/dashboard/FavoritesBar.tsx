@@ -126,8 +126,8 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
     };
 
     return (
-        <div className="w-full pb-4 pt-2">
-            <div className="flex gap-4 px-1 overflow-x-auto no-scrollbar pb-2">
+        <div className="w-full pb-2 pt-2">
+            <div className="flex gap-2 px-1 overflow-x-auto no-scrollbar pb-2">
                 {/* Add New Favorite Button & Dropdown Container */}
                 <div className="relative group w-28 md:w-40 shrink-0" ref={addMenuRef}>
                     <GlassCard
@@ -144,11 +144,11 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({ onSelect, availableC
                     </GlassCard>
                 </div>
 
-                <div className={`flex md:grid gap-4 transition-all duration-300 shrink-0 md:shrink md:flex-1 ${maxItems === 8 ? 'md:grid-cols-8' :
-                        maxItems === 7 ? 'md:grid-cols-7' :
-                            maxItems === 6 ? 'md:grid-cols-6' :
-                                maxItems === 5 ? 'md:grid-cols-5' :
-                                    'md:grid-cols-4'
+                <div className={`flex md:grid gap-2 transition-all duration-300 shrink-0 md:shrink md:flex-1 ${maxItems === 8 ? 'md:grid-cols-8' :
+                    maxItems === 7 ? 'md:grid-cols-7' :
+                        maxItems === 6 ? 'md:grid-cols-6' :
+                            maxItems === 5 ? 'md:grid-cols-5' :
+                                'md:grid-cols-4'
                     }`}>
                     {favorites.slice(0, maxItems).map((crypto) => (
                         <div

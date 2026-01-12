@@ -89,11 +89,11 @@ function App() {
 
       <main className={`
         relative z-10 transition-all duration-300
-        lg:pl-64 min-h-screen
-        p-4 lg:p-10
+        lg:pl-20 min-h-screen
+        p-4 lg:p-6
         ${mobileMenuOpen ? 'pt-20' : 'pt-20 lg:pt-10'}
       `}>
-        <div className="w-full max-w-[95%] xl:max-w-[90%] 2xl:max-w-[85%] mx-auto">
+        <div className="w-full max-w-[98%] xl:max-w-[98%] 2xl:max-w-[98%] mx-auto">
 
 
           {activeTab === 'Accounts' ? (
@@ -103,7 +103,7 @@ function App() {
           ) : (
             <>
               {/* Dashboard Header */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <h1 className="text-3xl font-semibold text-white tracking-tight ml-[3px]">Dashboard</h1>
 
                 <div className="flex items-center gap-3">
@@ -118,7 +118,7 @@ function App() {
               </div>
 
               {/* Favorites Bar */}
-              <div className="mb-8">
+              <div className="">
                 <FavoritesBar
                   onSelect={(coin) => setSelectedCoin(coin)}
                   availableCoins={coins}
@@ -127,10 +127,10 @@ function App() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
 
                 {/* Left Main Column */}
-                <div className="xl:col-span-3 space-y-6">
+                <div className="xl:col-span-3 space-y-4">
                   <MarketSummary selectedCoin={selectedCoin} />
 
                   {/* Main List */}
@@ -164,7 +164,7 @@ function App() {
 
 
                 {/* Right Side Column */}
-                <div className="xl:col-span-1 flex flex-col gap-6">
+                <div className="xl:col-span-1 flex flex-col gap-4">
                   <div className="h-auto hidden min-[2800px]:block shrink-0">
                     <TradePanel />
                   </div>
