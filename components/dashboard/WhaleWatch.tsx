@@ -64,22 +64,24 @@ export const WhaleWatch: React.FC = () => {
 
             <div className="flex-1 overflow-visible space-y-3">
                 {transactions.map((tx) => (
-                    <div key={tx.id} className={`p-3 rounded-xl border flex items-center justify-between transition-all animate-in slide-in-from-top-2 fade-in duration-500 ${tx.isWhale
-                            ? 'bg-gradient-to-r from-sedna-accent/10 to-transparent border-sedna-accent/20'
-                            : 'bg-white/5 border-white/5'
+                    <div key={tx.id} className={`p-3 rounded-xl border flex flex-col gap-2 transition-all animate-in slide-in-from-top-2 fade-in duration-500 ${tx.isWhale
+                        ? 'bg-gradient-to-r from-sedna-accent/10 to-transparent border-sedna-accent/20'
+                        : 'bg-white/5 border-white/5'
                         }`}>
-                        <div className="flex flex-col">
-                            <span className="text-xs text-white/40 font-mono">{tx.time}</span>
-                            <div className="flex items-center gap-2 font-bold text-white">
-                                {tx.isWhale && <AlertTriangle size={12} className="text-sedna-accent" />}
-                                <span>{tx.amount} {tx.currency}</span>
+                        <div className="flex justify-between items-start w-full">
+                            <div className="flex flex-col">
+                                <span className="text-xs text-white/40 font-mono">{tx.time}</span>
+                                <div className="flex items-center gap-2 font-bold text-white text-sm whitespace-nowrap">
+                                    {tx.isWhale && <AlertTriangle size={12} className="text-sedna-accent" />}
+                                    <span>{tx.amount} {tx.currency}</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2 text-xs text-white/40">
-                            <span className="font-mono">{tx.from}</span>
-                            <ArrowRight size={10} />
-                            <span className="font-mono">{tx.to}</span>
+                        <div className="flex items-center gap-2 text-xs text-white/40 w-full bg-black/20 p-1.5 rounded-lg">
+                            <span className="font-mono truncate flex-1">{tx.from}</span>
+                            <ArrowRight size={10} className="flex-shrink-0" />
+                            <span className="font-mono truncate flex-1 text-right">{tx.to}</span>
                         </div>
                     </div>
                 ))}
