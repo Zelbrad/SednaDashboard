@@ -13,7 +13,7 @@ interface StatCardProps {
 
 export const StatCard: React.FC<StatCardProps> = ({ title, value, trend, isPositive, icon: Icon, hoverEffect = false }) => {
   return (
-    <GlassCard className="p-6 flex flex-col justify-between h-full min-h-[160px]" hoverEffect={hoverEffect}>
+    <GlassCard className="p-5 flex flex-col justify-between h-full min-h-[140px]" hoverEffect={hoverEffect}>
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-lg bg-white/5 border border-white/5 text-gray-400 group-hover:text-white group-hover:bg-sedna-accent/10 transition-colors">

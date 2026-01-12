@@ -114,7 +114,7 @@ const generatePriceHistory = (basePrice: number, range: TimeRange) => {
   return data;
 };
 
-export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { name: 'Bitcoin', symbol: 'BTC', price: 64000 } }) => {
+export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { name: 'Bitcoin', symbol: 'BTC', price: 64000, image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' } }) => {
   const [timeRange, setTimeRange] = useState<TimeRange>('30D');
 
   const chartData = useMemo(() => generatePriceHistory(selectedCoin.price, timeRange), [selectedCoin.name, timeRange]);
@@ -128,7 +128,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
   const ranges: TimeRange[] = ['1D', '5D', '30D', '1Y', '5Y', 'MAX'];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
 
       {/* Column 1: Stats Context */}
       <div className="grid grid-cols-2 lg:grid-cols-1 gap-6">
@@ -149,7 +149,7 @@ export const MarketSummary: React.FC<MarketSummaryProps> = ({ selectedCoin = { n
       </div>
 
       {/* Column 2: Price History Chart */}
-      <GlassCard className="lg:col-span-2 !p-0 flex flex-col min-h-[400px]" hoverEffect={false}>
+      <GlassCard className="lg:col-span-3 !p-0 flex flex-col min-h-[450px]" hoverEffect={false}>
         <div className="p-6 border-b border-sedna-glassBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2">

@@ -45,7 +45,7 @@ export const WhaleWatch: React.FC = () => {
     }, []);
 
     return (
-        <GlassCard className="h-full p-6 flex flex-col">
+        <GlassCard className="h-full p-6 flex flex-col" hoverEffect={false}>
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
                     <Disc className="text-blue-400" size={20} />
